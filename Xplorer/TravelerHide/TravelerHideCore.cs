@@ -77,7 +77,15 @@ internal sealed class TravelerHideCore : IDisposable {
     }
 
     private void OnTerritoryChanged(ushort territoryId) {
-        _mainWindow.CurrentWorld = _clientState.LocalPlayer?.CurrentWorld.GameData?.Name ?? "Unknown";
+        UpdateWorldName();
+    }
+
+    internal void RequestWorldUpdate() {
+        _framework.RunOnTick(UpdateWorldName);
+    }
+
+    private void UpdateWorldName() {
+        _mainWindow.CurrentWorld = _clientState.LocalPlayer?.CurrentWorld.GameData?.Name ?? "";
     }
 
     public void Dispose() {

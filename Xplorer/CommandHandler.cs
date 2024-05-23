@@ -20,7 +20,7 @@ public sealed class CommandHandler : IDisposable {
     }
 
     public void Dispose() {
-            UnregisterCommands(_registeredCommandNames);
+        UnregisterCommands(_registeredCommandNames);
     }
 
     public void RegisterCommands(IEnumerable<IHandlerCommand> commands) {
@@ -52,7 +52,7 @@ public sealed class CommandHandler : IDisposable {
         _commandManager.AddHandler(customCommand.Name, customCommand.CommandInfo);
         _registeredCommandNames.Add(customCommand.Name);
     }
-    
+
     private void OnSimpleCommand(string command, string arguments) {
         var key = command.ToLowerInvariant();
         _simpleCommands[key].Invoke();

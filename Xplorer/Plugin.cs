@@ -12,7 +12,7 @@ public sealed class Plugin : IDalamudPlugin {
     private readonly IObjectTable           _objectTable;
     private readonly Configuration          _configuration;
     private readonly CommandHandler         _commandHandler;
-    
+
     private readonly WindowSystem _windowSystem = new("Xplorer");
 
     private readonly TravelerHideCore _travelerHide;
@@ -23,8 +23,7 @@ public sealed class Plugin : IDalamudPlugin {
         IFramework             framework,
         IClientState           clientState,
         IObjectTable           objectTable,
-        IPluginLog pluginLog)
-    {
+        IPluginLog             pluginLog) {
         _pluginInterface = pluginInterface;
         _framework       = framework;
         _clientState     = clientState;
@@ -37,18 +36,20 @@ public sealed class Plugin : IDalamudPlugin {
         _pluginInterface.UiBuilder.Draw += DrawUi;
 
         _travelerHide = new TravelerHideCore(_framework, _clientState, _objectTable);
-        
+
         _travelerHide.RegisterSelf(_windowSystem, _commandHandler);
     }
 
     public void Dispose() {
         _pluginInterface.UiBuilder.Draw -= DrawUi;
-        
+
         _travelerHide.UnregisterSelf(_windowSystem, _commandHandler);
         _travelerHide.Dispose();
-        
+
         _commandHandler.Dispose();
     }
 
-    private void DrawUi() => _windowSystem.Draw();
+    private void DrawUi() {
+        _windowSystem.Draw();
+    }
 }
