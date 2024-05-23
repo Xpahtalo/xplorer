@@ -1,13 +1,8 @@
 {
-  "Author": "your name here",
+  "Author": "X'pahtalo",
   "Name": "Xplorer",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "Punchline": "A test bed for a few ideas.",
+  "Description": "A test bed for a few ideas.",
   "ApplicableVersion": "any",
-  "Tags": [
-    "sample",
-    "plugin",
-    "goats"
-  ]
+  "Tags": []
 }
-R

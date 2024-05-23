@@ -1,52 +1,40 @@
-﻿using Dalamud.Game.Command;
-using Dalamud.IoC;
-using Dalamud.Plugin;
-using System.IO;
+﻿using Dalamud.Plugin;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using Xplorer.Windows;
+using Xplorer.TravelerHide;
 
 namespace Xplorer;
 
-public sealed class Plugin : IDalamudPlugin
-{
-    private const string CommandName = "/pmycommand";
+public sealed class Plugin : IDalamudPlugin {
+    private readonly DalamudPluginInterface _pluginInterface;
+    private readonly IFramework             _framework;
+    private readonly IClientState           _clientState;
+    private readonly IObjectTable           _objectTable;
+    private readonly Configuration          _configuration;
+    private readonly CommandHandler         _commandHandler;
+    
+    private readonly WindowSystem _windowSystem = new("Xplorer");
 
-    private DalamudPluginInterface PluginInterface { get; init; }
-    private ICommandManager CommandManager { get; init; }
-    public Configuration Configuration { get; init; }
-
-    public readonly WindowSystem WindowSystem = new("Xplorer");
-    private ConfigWindow ConfigWindow { get; init; }
-    private MainWindow MainWindow { get; init; }
+    private readonly TravelerHideCore _travelerHide;
 
     public Plugin(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] ICommandManager commandManager,
-        [RequiredVersion("1.0")] ITextureProvider textureProvider)
+        DalamudPluginInterface pluginInterface,
+        ICommandManager        commandManager,
+        IFramework             framework,
+        IClientState           clientState,
+        IObjectTable           objectTable,
+        IPluginLog pluginLog)
     {
-        PluginInterface = pluginInterface;
-        CommandManager = commandManager;
+        _pluginInterface = pluginInterface;
+        _framework       = framework;
+        _clientState     = clientState;
+        _objectTable     = objectTable;
+        _commandHandler  = new CommandHandler(commandManager, pluginLog);
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Configuration.Initialize(PluginInterface);
+        _configuration = _pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        _configuration.Initialize(_pluginInterface);
 
-        // you might normally want to embed resources and load them from the manifest stream
-        var file = new FileInfo(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png"));
-
-        // ITextureProvider takes care of the image caching and dispose
-        var goatImage = textureProvider.GetTextureFromFile(file);
-
-        ConfigWindow = new ConfigWindow(this);
-        MainWindow = new MainWindow(this, goatImage);
-
-        WindowSystem.AddWindow(ConfigWindow);
-        WindowSystem.AddWindow(MainWindow);
-
-        CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
-        {
-            HelpMessage = "A useful message to display in /xlhelp"
-        });
+        _pluginInterface.UiBuilder.Draw += DrawUi;
 
         PluginInterface.UiBuilder.Draw += DrawUI;
 
@@ -58,24 +46,12 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
     }
 
-    public void Dispose()
-    {
-        WindowSystem.RemoveAllWindows();
-
-        ConfigWindow.Dispose();
-        MainWindow.Dispose();
-
-        CommandManager.RemoveHandler(CommandName);
+    public void Dispose() {
+        _pluginInterface.UiBuilder.Draw -= DrawUi;
+        
+        
+        _commandHandler.Dispose();
     }
 
-    private void OnCommand(string command, string args)
-    {
-        // in response to the slash command, just toggle the display status of our main ui
-        ToggleMainUI();
-    }
-
-    private void DrawUI() => WindowSystem.Draw();
-
-    public void ToggleConfigUI() => ConfigWindow.Toggle();
-    public void ToggleMainUI() => MainWindow.Toggle();
+    private void DrawUi() => _windowSystem.Draw();
 }
