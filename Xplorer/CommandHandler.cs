@@ -63,7 +63,9 @@ public sealed class CommandHandler : IDisposable {
     }
 
     private void UnregisterCommands(IEnumerable<string> commandNames) {
-        foreach (var name in commandNames) {
+        var commands = commandNames.ToList();
+
+        foreach (var name in commands) {
             _pluginLog.Debug("Removing command {0}", name);
             _commandManager.RemoveHandler(name);
             _registeredCommandNames.RemoveAll(c => string.Equals(c, name, StringComparison.OrdinalIgnoreCase));
