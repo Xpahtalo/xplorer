@@ -1,7 +1,10 @@
 ﻿using Dalamud.Plugin;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
+using XivCommon;
+using XivCommon.Functions;
 using Xplorer.AddonExplore;
+using Xplorer.Titler;
 using Xplorer.TravelerHide;
 
 namespace Xplorer;
@@ -15,6 +18,7 @@ public sealed class Plugin : IDalamudPlugin {
     private readonly IPluginLog             _pluginLog;
     private readonly Configuration          _configuration;
     private readonly CommandHandler         _commandHandler;
+    private readonly XivCommonBase  _common;
 
     private readonly WindowSystem _windowSystem = new("Xplorer");
 
@@ -36,11 +40,13 @@ public sealed class Plugin : IDalamudPlugin {
         _pluginLog       = pluginLog;
         _addonLifecycle  = addonLifecycle;
         _commandHandler  = new CommandHandler(commandManager, pluginLog);
+        _common         = new XivCommonBase(_pluginInterface, Hooks.None);
 
         _configuration = _pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         _configuration.Initialize(_pluginInterface);
 
         _pluginInterface.UiBuilder.Draw += DrawUi;
+        _titler = new TitlerCore(_clientState, _commandManager, _framework, _pluginLog, _common);
 
         _travelerHide = new TravelerHideCore(_framework, _clientState, _objectTable);
         _travelerHide.RegisterSelf(_windowSystem, _commandHandler);
@@ -54,6 +60,8 @@ public sealed class Plugin : IDalamudPlugin {
 
         _travelerHide.Dispose();
         _addonExplore.Dispose();
+        _titler.Dispose();
+        _travelerHide.Dispose();
 
         _commandHandler.Dispose();
     }
