@@ -15,7 +15,7 @@ using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.ValueType;
 namespace Xplorer.AddonExplore;
 
 internal sealed class AddonExploreCore : IDisposable {
-    private const bool OpenOnLoad = true;
+    private const bool OpenOnLoad = false;
 
     private readonly IFramework      _framework;
     private readonly IAddonLifecycle _addonLifecycle;
@@ -221,9 +221,12 @@ internal sealed class AddonExploreCore : IDisposable {
         windowSystem.AddWindow(_mainWindow);
         commandHandler.RegisterCommands(_commands);
 
+
+#pragma warning disable CS0162 // Unreachable code detected
         if (OpenOnLoad) {
             _mainWindow.IsOpen = true;
         }
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     internal void UnregisterSelf(WindowSystem windowSystem, CommandHandler commandHandler) {

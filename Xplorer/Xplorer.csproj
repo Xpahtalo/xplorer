@@ -16,4 +16,8 @@
             <Visible>false</Visible>
         </Content>
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="XivCommon" Version="9.0.0"/>
+    </ItemGroup>
 </Project>

@@ -4,5 +4,7 @@
   "Punchline": "A test bed for a few ideas.",
   "Description": "A test bed for a few ideas.",
   "ApplicableVersion": "any",
-  "Tags": []
+  "Tags": [
+    "dev"
+  ]
 }
