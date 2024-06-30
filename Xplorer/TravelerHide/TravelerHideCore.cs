@@ -57,7 +57,7 @@ internal sealed class TravelerHideCore : IDisposable {
 
     private unsafe void SetTravellerVisibility(bool visible) {
         foreach (var gameObject in _objectTable.Where(o => o.IsValid() && o.ObjectKind == ObjectKind.Player)) {
-            if (gameObject is not PlayerCharacter character ||
+            if (gameObject is not IPlayerCharacter character ||
                 character.HomeWorld.Id == _clientState.LocalPlayer?.CurrentWorld.Id) {
                 continue;
             }

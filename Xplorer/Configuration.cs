@@ -9,9 +9,9 @@ public class Configuration : IPluginConfiguration {
     public int Version { get; set; } = 0;
 
     // the below exist just to make saving less cumbersome
-    [NonSerialized] private DalamudPluginInterface? PluginInterface;
+    [NonSerialized] private IDalamudPluginInterface? PluginInterface;
 
-    public void Initialize(DalamudPluginInterface pluginInterface) {
+    public void Initialize(IDalamudPluginInterface pluginInterface) {
         PluginInterface = pluginInterface;
     }
 

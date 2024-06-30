@@ -172,7 +172,6 @@ internal sealed class AddonExploreCore : IDisposable {
 
         var text = MemoryHelper.ReadStringNullTerminated((IntPtr)array->ManagedStringArray[1]);
         if (!text.Contains("blessing")) {
-            sb.AppendLine($"flags: {addon->Flags}");
             sb.AppendLine($"RootNodeTweenState: {addon->RootNodeTween.State}");
             sb.AppendLine($"VisibilityFlags: {addon->VisibilityFlags}");
             sb.AppendLine($"CollisionNodeCount: {addon->CollisionNodeListCount}");

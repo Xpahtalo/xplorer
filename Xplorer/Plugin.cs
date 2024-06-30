@@ -10,7 +10,7 @@ namespace Xplorer;
 
 public sealed class Plugin : IDalamudPlugin {
     // Dalamud
-    private readonly DalamudPluginInterface _pluginInterface;
+    private readonly IDalamudPluginInterface _pluginInterface;
     private readonly Configuration          _configuration;
     private readonly IAddonLifecycle        _addonLifecycle;
     private readonly IClientState           _clientState;
@@ -21,16 +21,16 @@ public sealed class Plugin : IDalamudPlugin {
     private readonly WindowSystem           _windowSystem;
 
     // Other Services
-    private readonly XivCommonBase  _common;
+    // private readonly XivCommonBase  _common;
     private readonly CommandHandler _commandHandler;
 
     // Cores
     private readonly AddonExploreCore _addonExplore;
-    private readonly TitlerCore       _titler;
+    // private readonly TitlerCore       _titler;
     private readonly TravelerHideCore _travelerHide;
 
     public Plugin(
-        DalamudPluginInterface pluginInterface,
+        IDalamudPluginInterface pluginInterface,
         IAddonLifecycle        addonLifecycle,
         IClientState           clientState,
         ICommandManager        commandManager,
@@ -46,7 +46,7 @@ public sealed class Plugin : IDalamudPlugin {
         _objectTable     = objectTable;
         _pluginLog       = pluginLog;
 
-        _common         = new XivCommonBase(_pluginInterface, Hooks.None);
+        //_common         = new XivCommonBase(_pluginInterface, Hooks.None);
         _windowSystem   = new WindowSystem("Xplorer");
         _commandHandler = new CommandHandler(commandManager, pluginLog);
 
@@ -58,7 +58,7 @@ public sealed class Plugin : IDalamudPlugin {
         _addonExplore = new AddonExploreCore(_addonLifecycle, _pluginLog, _framework);
         _addonExplore.RegisterSelf(_windowSystem, _commandHandler);
 
-        _titler = new TitlerCore(_clientState, _commandManager, _framework, _pluginLog, _common);
+        //_titler = new TitlerCore(_clientState, _framework, _pluginLog, _common);
 
         _travelerHide = new TravelerHideCore(_framework, _clientState, _objectTable);
         _travelerHide.RegisterSelf(_windowSystem, _commandHandler);
@@ -68,7 +68,7 @@ public sealed class Plugin : IDalamudPlugin {
         _pluginInterface.UiBuilder.Draw -= DrawUi;
 
         _addonExplore.Dispose();
-        _titler.Dispose();
+        // _titler.Dispose();
         _travelerHide.Dispose();
 
         _commandHandler.Dispose();
